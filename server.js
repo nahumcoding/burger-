@@ -1,5 +1,8 @@
+// Require the following npm packages inside of the server.js file express and bodyparser:
+
 var express = require("express");
 var bodyParser = require("body-parser");
+// Require the following app = express:
 
 var app = express();
 
@@ -32,6 +35,21 @@ connection.connect(function(err) {
   
     console.log("connected as id " + connection.threadId);
   });
+
+
+
+// Root get route
+app.get("/", function(req, res) {
+    connection.query("SELECT * FROM tasks;", function(err, data) {
+      if (err) throw err;
+  
+      // Test it
+      console.log('The solution is: ', data);
+  
+      // Test it
+      // return res.send(data);
+
+// Post route -> back to home
 
 
 
