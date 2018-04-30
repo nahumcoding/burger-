@@ -1,63 +1,32 @@
-// Require the following npm packages inside of the server.js file express and bodyparser:
-
 var express = require("express");
 var bodyParser = require("body-parser");
-// Require the following app = express:
+
+var PORT = process.env.PORT || 8080;
 
 var app = express();
 
-// Set the port of our application
-// process.env.PORT lets the port be set by Heroku
-var PORT = process.env.PORT || 8080;
+// Serve static content for the app from the "public" directory in the application directory.
+app.use(express.static("public"));
 
-// Sets up the Express app to handle data parsing
+// parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: true }));
+
+// parse application/json
 app.use(bodyParser.json());
 
+// Set Handlebars.
 var exphbs = require("express-handlebars");
 
 app.engine("handlebars", exphbs({ defaultLayout: "main" }));
 app.set("view engine", "handlebars");
 
-var mysql = require("mysql");
+// Import routes and give the server access to them.
+var routes = require("./controllers/catsController.js");
 
-var connection = mysql.createConnection({
-  host: "localhost",
-  user: "root",
-  password: "Codingforthefuture",
-  database: "burgers_db"
-});
-connection.connect(function(err) {
-    if (err) {
-      console.error("error connecting: " + err.stack);
-      return;
-    }
-  
-    console.log("connected as id " + connection.threadId);
-  });
+app.use(routes);
 
-
-
-// Root get route
-app.get("/", function(req, res) {
-    connection.query("SELECT * FROM tasks;", function(err, data) {
-      if (err) throw err;
-  
-      // Test it
-      console.log('The solution is: ', data);
-  
-      // Test it
-      // return res.send(data);
-
-// Post route -> back to home
-
-
-
-
-
-  
-  // Start our server so that it can begin listening to client requests.
+// Start our server so that it can begin listening to client requests.
 app.listen(PORT, function() {
-    // Log (server-side) when our server has started
-    console.log("Server listening on: http://localhost:" + PORT);
-  });
+  // Log (server-side) when our server has started
+  console.log("Server listening on: http://localhost:" + PORT);
+});
